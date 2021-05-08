@@ -6,34 +6,47 @@
 //
 
 import UIKit
-import SnapKit
 import Foundation
 
 class SearchViewController: UIViewController, SearchViewDelegate {
 
     class var searchViewWidthAndHeight: CGFloat {
-        return 60
+        60
+    }
+    
+    class var defaultUITableViewCellIdentifier: String {
+        "Cell"
     }
     
     private var searchView: SearchView!
+    let tableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setup()
     }
+    
+    var itemArray: [Items] = []
 
+    // MARK: - Setup
     func setup() {
+        
         self.setupSearchView(widthAndHeight: Self.searchViewWidthAndHeight)
+        self.setupTableView()
     }
     
     func setupSearchView(widthAndHeight: CGFloat) {
-        self.searchView = SearchView(widthAndHeight: widthAndHeight, delegate: self)
+        self.searchView = SearchView(buttonWidthAndHeight: widthAndHeight, availableWidth: self.safeAreaFrame.width, delegate: self)
+        self.searchView.frame.origin.y = self.safeAreaFrame.origin.y
         self.view.addSubview(self.searchView)
-        self.searchView.snp.makeConstraints {
-            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-            $0.left.right.equalToSuperview()
-            $0.height.equalTo(widthAndHeight)
-        }
+    }
+    
+    func setupTableView() {
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: Self.defaultUITableViewCellIdentifier)
+        self.tableView.frame = CGRect(x: self.safeAreaFrame.origin.x, y: self.searchView.frame.origin.y + self.searchView.frame.height, width: self.safeAreaFrame.width, height: self.safeAreaFrame.height - self.searchView.frame.height)
+        self.view.addSubview(self.tableView)
     }
     
     
@@ -48,17 +61,21 @@ class SearchViewController: UIViewController, SearchViewDelegate {
         // The results are sorted by stars in descending order, so that the most popular repositories appear first in the search results.
         let sortQuery = URLQueryItem(name: "sort", value: "stars")
         let orderQuery = URLQueryItem(name: "order", value: "desc")
+        let maxPerPageQuery = URLQueryItem(name: "per_page", value: "100")
+        let pageQuery = URLQueryItem(name: "page", value: "1")
         if !string.isEmpty,
            let url = URLComponents(scheme: "https", host: "api.github.com", path: "/search/repositories", queryItems: [
                                     URLQueryItem(name: "q", value: string),
                                     sortQuery,
                                     orderQuery,
+                                    maxPerPageQuery,
+                                    pageQuery,
            ]).url {
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
             request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
             
-            URLSession.shared.dataTask(with: request, completionHandler: { (data: Data?, response: URLResponse?, error: Error?) in
+            URLSession.shared.dataTask(with: request, completionHandler: { [unowned self] (data: Data?, response: URLResponse?, error: Error?) in
                 DispatchQueue.main.async {
                     guard error == nil else {
                         print("SearchViewController searchText error: \(error!)")
@@ -76,12 +93,15 @@ class SearchViewController: UIViewController, SearchViewDelegate {
                         print("SearchViewController searchText, Can't unwrap data")
                         return
                     }
-                    print("SearchViewController searchText data: \(String(decoding: data, as: UTF8.self))")
-//                    do {
-//                        let returnedSearchModel = try JSONDecoder().decode(ReturnedSearchModel.self, from: data)
-//                    } catch {
-//                        print("SearchViewController searchText, catch error: \(error)")
-//                    }
+//                    print("SearchViewController searchText data: \(String(decoding: data, as: UTF8.self))")
+                    do {
+                        let returnedSearchModel = try JSONDecoder().decode(ReturnedSearchModel.self, from: data)
+//                        print("item count: \(returnedSearchModel.items?.count), total Count: \(returnedSearchModel.total_count)")
+                        self.itemArray = returnedSearchModel.items ?? []
+                        self.tableView.reloadData()
+                    } catch {
+                        print("SearchViewController searchText, catch error: \(error)")
+                    }
                     
                 }
             })
@@ -89,55 +109,22 @@ class SearchViewController: UIViewController, SearchViewDelegate {
         }
     }
 }
-//
-//extension SearchViewController: UITextFieldDelegate {
-////    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-////        // return NO to disallow editing.
-////        print("TextField should begin editing method called")
-////        return true
-////    }
-////
-////    func textFieldDidBeginEditing(_ textField: UITextField) {
-////        // became first responder
-////        print("TextField did begin editing method called")
-////    }
-////
-////    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-////        // return YES to allow editing to stop and to resign first responder status. NO to disallow the editing session to end
-////        print("TextField should snd editing method called")
-////        return true
-////    }
-////
-////    func textFieldDidEndEditing(_ textField: UITextField) {
-////        // may be called if forced even if shouldEndEditing returns NO (e.g. view removed from window) or endEditing:YES called
-////        print("TextField did end editing method called")
-////    }
-////
-////    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-////        // if implemented, called in place of textFieldDidEndEditing:
-////        print("TextField did end editing with reason method called")
-////    }
-////
-////    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-////        // return NO to not change text
-////        print("While entering the characters this method gets called")
-////        return true
-////    }
-////
-////    func textFieldShouldClear(_ textField: UITextField) -> Bool {
-////        // called when clear button pressed. return NO to ignore (no notifications)
-////        print("TextField should clear method called")
-////        return true
-////    }
-//
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        // called when 'return' key pressed. return NO to ignore.
-////        print("TextField should return method called")
-//        // may be useful: textField.resignFirstResponder()
-//        if let text = textField.text {
-//            print("textFieldShouldReturn: \(text)")
-//        }
-//        textField.resignFirstResponder()
-//        return true
-//    }
-//}
+
+extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        self.itemArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell
+        if let returnedCell = tableView.dequeueReusableCell(withIdentifier: Self.defaultUITableViewCellIdentifier) {
+            cell = returnedCell
+        } else {
+            cell = UITableViewCell()
+        }
+        cell.textLabel?.text = self.itemArray[indexPath.row].name
+        return cell
+    }
+    
+    
+}
