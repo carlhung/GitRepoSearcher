@@ -8,13 +8,18 @@
 import UIKit
 import SnapKit
 
-class SearchView: UIView {
-    let enterButton = UIButton()
-    let searchTextField = UITextField()
+protocol SearchViewDelegate {
+    func searchText(string: String)
+}
+
+class SearchView: UIView, UITextFieldDelegate {
+    private let enterButton = UIButton()
+    private let searchTextField = UITextField()
+    private var delegate: SearchViewDelegate!
     
-    init(widthAndHeight: CGFloat) {
+    init(widthAndHeight: CGFloat, delegate: SearchViewDelegate) {
         super.init(frame: .zero)
-        self.setup(widthAndHeight: widthAndHeight)
+        self.setup(widthAndHeight: widthAndHeight, delegate: delegate)
     }
     
     @available(*, unavailable, message: "This should be used. use init() instead")
@@ -22,9 +27,14 @@ class SearchView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setup(widthAndHeight: CGFloat) {
+    func setup(widthAndHeight: CGFloat, delegate: SearchViewDelegate) {
+        self.setupSelf(delegate: delegate)
         self.setupEnterButton(widthAndHeight: widthAndHeight)
         self.setupSearchTextField()
+    }
+    
+    func setupSelf(delegate: SearchViewDelegate) {
+        self.delegate = delegate
     }
     
     func setupEnterButton(widthAndHeight: CGFloat) {
@@ -41,6 +51,7 @@ class SearchView: UIView {
     
     func setupSearchTextField() {
 //        self.searchTextField.translatesAutoresizingMaskIntoConstraints = false
+        self.searchTextField.delegate = self
         self.searchTextField.placeholder = "Repo keyword"
         self.searchTextField.keyboardType = .default
         self.searchTextField.returnKeyType = .search
@@ -59,5 +70,16 @@ class SearchView: UIView {
     @objc
     func searchPressed() {
         print("SearchView searchPressed")
+        if let text = self.searchTextField.text {
+            delegate.searchText(string: text)
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let text = textField.text {
+            delegate.searchText(string: text)
+        }
+        textField.resignFirstResponder()
+        return true
     }
 }
