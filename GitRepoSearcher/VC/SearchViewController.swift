@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Foundation
 
 class SearchViewController: UIViewController, SearchViewDelegate {
 
@@ -38,8 +39,54 @@ class SearchViewController: UIViewController, SearchViewDelegate {
     
     // MARK: - Delegate method
     func searchText(string: String) {
-        guard !string.isEmpty else { return }
-        print("SearchViewController searchText: \(string)")
+        /*
+         curl \
+           -H "Accept: application/vnd.github.v3+json" \
+           "https://api.github.com/search/repositories?q=tetris+language:assembly&sort=stars&order=desc"
+         */
+        
+        // The results are sorted by stars in descending order, so that the most popular repositories appear first in the search results.
+        let sortQuery = URLQueryItem(name: "sort", value: "stars")
+        let orderQuery = URLQueryItem(name: "order", value: "desc")
+        if !string.isEmpty,
+           let url = URLComponents(scheme: "https", host: "api.github.com", path: "/search/repositories", queryItems: [
+                                    URLQueryItem(name: "q", value: string),
+                                    sortQuery,
+                                    orderQuery,
+           ]).url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "GET"
+            request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+            
+            URLSession.shared.dataTask(with: request, completionHandler: { (data: Data?, response: URLResponse?, error: Error?) in
+                DispatchQueue.main.async {
+                    guard error == nil else {
+                        print("SearchViewController searchText error: \(error!)")
+                        return
+                    }
+                    guard let httpResponse = response as? HTTPURLResponse else {
+                        print("SearchViewController searchText: can't cast to HTTPURLResponse")
+                        return
+                    }
+                    guard httpResponse.statusCode == 200 else {
+                        print("SearchViewController searchText, other statusCode: \(httpResponse.statusCode)")
+                        return
+                    }
+                    guard let data = data else {
+                        print("SearchViewController searchText, Can't unwrap data")
+                        return
+                    }
+                    print("SearchViewController searchText data: \(String(decoding: data, as: UTF8.self))")
+//                    do {
+//                        let returnedSearchModel = try JSONDecoder().decode(ReturnedSearchModel.self, from: data)
+//                    } catch {
+//                        print("SearchViewController searchText, catch error: \(error)")
+//                    }
+                    
+                }
+            })
+                .resume()
+        }
     }
 }
 //
