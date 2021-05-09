@@ -21,6 +21,7 @@
 		E836ACD126461D83004B1F93 /* Items.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836ACCD26461D83004B1F93 /* Items.swift */; };
 		E836ACD226461D83004B1F93 /* Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836ACCE26461D83004B1F93 /* Owner.swift */; };
 		E836ACD326461D83004B1F93 /* ReturnedSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836ACCF26461D83004B1F93 /* ReturnedSearchModel.swift */; };
+		E83DD52F26480F47003D908B /* LeftRightLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83DD52E26480F47003D908B /* LeftRightLabelView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		E836ACCD26461D83004B1F93 /* Items.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Items.swift; sourceTree = "<group>"; };
 		E836ACCE26461D83004B1F93 /* Owner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Owner.swift; sourceTree = "<group>"; };
 		E836ACCF26461D83004B1F93 /* ReturnedSearchModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReturnedSearchModel.swift; sourceTree = "<group>"; };
+		E83DD52E26480F47003D908B /* LeftRightLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftRightLabelView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				E8313DFF264586B000752606 /* SearchView.swift */,
+				E83DD52E26480F47003D908B /* LeftRightLabelView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -212,6 +215,7 @@
 				E8313DE426457FBB00752606 /* AppDelegate.swift in Sources */,
 				E831812226475FB50037198D /* RepoDetailViewController.swift in Sources */,
 				E836ACC62646114F004B1F93 /* ExtenURLComponents.swift in Sources */,
+				E83DD52F26480F47003D908B /* LeftRightLabelView.swift in Sources */,
 				E836ACD126461D83004B1F93 /* Items.swift in Sources */,
 				E8313DE626457FBB00752606 /* SceneDelegate.swift in Sources */,
 				E836ACD026461D83004B1F93 /* License.swift in Sources */,

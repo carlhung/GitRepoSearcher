@@ -101,7 +101,6 @@ class SearchViewController: UIViewController, SearchViewDelegate {
 //                    print("SearchViewController searchText data: \(String(decoding: data, as: UTF8.self))")
                     do {
                         let returnedSearchModel = try JSONDecoder().decode(ReturnedSearchModel.self, from: data)
-//                        print("item count: \(returnedSearchModel.items?.count), total Count: \(returnedSearchModel.total_count)")
                         self.itemArray = returnedSearchModel.items ?? []
                         self.tableView.reloadData()
                     } catch {

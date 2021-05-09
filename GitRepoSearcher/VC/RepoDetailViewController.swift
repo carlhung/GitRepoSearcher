@@ -18,7 +18,7 @@ class RepoDetailViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    @available(*, unavailable, message: "This should be used. use init(repo:) instead")
+    @available(*, unavailable, message: "This shouldn't be used. use init(repo:) instead")
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -27,7 +27,11 @@ class RepoDetailViewController: UIViewController {
     // MARK: - Override
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .green
+//        self.view.backgroundColor = .green
+//        let height = self.navigationController?.navigationBar.frame.maxY
+//        let dualLabel = LeftRightLabelView(left: "left", right: "right", size: CGSize(width: self.safeAreaFrame.width, height: 20))
+//        dualLabel.frame.origin = CGPoint(x: self.safeAreaFrame.origin.x, y: height ?? 0)//self.safeAreaFrame.origin.y + (height ?? 0))
+//        self.view.addSubview(dualLabel)
         // Do any additional setup after loading the view.
     }
     

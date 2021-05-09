@@ -25,7 +25,7 @@ class SearchView: UIView, UITextFieldDelegate {
         self.setup(buttonWidthAndHeight: buttonWidthAndHeight, availableWidth: availableWidth, delegate: delegate)
     }
     
-    @available(*, unavailable, message: "This should be used. use init() instead")
+    @available(*, unavailable, message: "This shouldn't be used. use init(buttonWidthAndHeight:availableWidth:delegate:) instead")
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
