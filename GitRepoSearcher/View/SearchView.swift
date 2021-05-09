@@ -12,11 +12,14 @@ protocol SearchViewDelegate {
 }
 
 class SearchView: UIView, UITextFieldDelegate {
+    
+    // MARK: - Properties
     private let enterButton = UIButton()
     private let searchTextField = UITextField()
     private var delegate: SearchViewDelegate!
     private var totalWidth: CGFloat!
     
+    // MARK: - Init
     init(buttonWidthAndHeight: CGFloat, availableWidth: CGFloat, delegate: SearchViewDelegate) {
         super.init(frame: .zero)
         self.setup(buttonWidthAndHeight: buttonWidthAndHeight, availableWidth: availableWidth, delegate: delegate)
@@ -27,6 +30,8 @@ class SearchView: UIView, UITextFieldDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    // MARK: - Setup
     func setup(buttonWidthAndHeight: CGFloat, availableWidth: CGFloat, delegate: SearchViewDelegate) {
         self.setupSelf(availableWidth: availableWidth, buttonWidthAndHeight: buttonWidthAndHeight, delegate: delegate)
         self.setupEnterButton(buttonWidthAndHeight: buttonWidthAndHeight)
@@ -67,6 +72,7 @@ class SearchView: UIView, UITextFieldDelegate {
         self.addSubview(self.searchTextField)
     }
     
+    // MARK: - Button Events
     @objc
     func searchPressed() {
         print("SearchView searchPressed")
@@ -75,6 +81,7 @@ class SearchView: UIView, UITextFieldDelegate {
         }
     }
     
+    // MARK: - UITextFieldDelegate Method
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let text = textField.text {
             delegate.searchText(string: text)

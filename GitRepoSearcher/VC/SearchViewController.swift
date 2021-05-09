@@ -10,6 +10,7 @@ import Foundation
 
 class SearchViewController: UIViewController, SearchViewDelegate {
 
+    // MARK: - Class properties
     class var searchViewWidthAndHeight: CGFloat {
         60
     }
@@ -18,26 +19,30 @@ class SearchViewController: UIViewController, SearchViewDelegate {
         "Cell"
     }
     
+    // MARK: - Properties
     private var searchView: SearchView!
     let tableView = UITableView()
     
+    // MARK: - Data
+    var itemArray: [Items] = []
+    
+    
+    // MARK: - Override
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setup()
     }
     
-    var itemArray: [Items] = []
-
     // MARK: - Setup
     func setup() {
-        
         self.setupSearchView(widthAndHeight: Self.searchViewWidthAndHeight)
         self.setupTableView()
     }
     
     func setupSearchView(widthAndHeight: CGFloat) {
         self.searchView = SearchView(buttonWidthAndHeight: widthAndHeight, availableWidth: self.safeAreaFrame.width, delegate: self)
-        self.searchView.frame.origin.y = self.safeAreaFrame.origin.y
+        let height = navigationController?.navigationBar.frame.maxY
+        self.searchView.frame.origin.y = self.safeAreaFrame.origin.y + (height ?? 0)
         self.view.addSubview(self.searchView)
     }
     
@@ -45,7 +50,7 @@ class SearchViewController: UIViewController, SearchViewDelegate {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: Self.defaultUITableViewCellIdentifier)
-        self.tableView.frame = CGRect(x: self.safeAreaFrame.origin.x, y: self.searchView.frame.origin.y + self.searchView.frame.height, width: self.safeAreaFrame.width, height: self.safeAreaFrame.height - self.searchView.frame.height)
+        self.tableView.frame = CGRect(x: 0, y: self.searchView.frame.origin.y + self.searchView.frame.height, width: self.safeAreaFrame.width, height: self.safeAreaFrame.height - self.searchView.frame.height - (navigationController?.navigationBar.frame.maxY ?? 0))
         self.view.addSubview(self.tableView)
     }
     
@@ -105,11 +110,12 @@ class SearchViewController: UIViewController, SearchViewDelegate {
                     
                 }
             })
-                .resume()
+            .resume()
         }
     }
 }
 
+// MARK: - Extension for UITableView
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         self.itemArray.count
@@ -126,5 +132,9 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = RepoDetailViewController(repo: self.itemArray[indexPath.row])
+        self.navigationController?.pushViewController(vc, animated: true)
+        tableView.deselectRow(at: indexPath, animated: false)
+    }
 }
