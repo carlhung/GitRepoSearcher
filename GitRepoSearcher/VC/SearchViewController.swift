@@ -31,6 +31,7 @@ class SearchViewController: UIViewController, SearchViewDelegate {
     
     // MARK: - Setup
     func setup() {
+        self.setupNavigationBar()
         self.setupSearchView(widthAndHeight: Self.searchViewWidthAndHeight)
         self.setupTableView()
     }
@@ -48,6 +49,10 @@ class SearchViewController: UIViewController, SearchViewDelegate {
         self.tableView.register(FlavouriteTableViewCell.self, forCellReuseIdentifier: FlavouriteTableViewCell.identifier)
         self.tableView.frame = CGRect(x: 0, y: self.searchView.frame.origin.y + self.searchView.frame.height, width: self.safeAreaFrame.width, height: self.safeAreaFrame.height - self.searchView.frame.height - (navigationController?.navigationBar.frame.maxY ?? 0))
         self.view.addSubview(self.tableView)
+    }
+    
+    func setupNavigationBar() {
+        self.title = "Repo Searcher"
     }
     
     
