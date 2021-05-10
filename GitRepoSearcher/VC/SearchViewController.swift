@@ -75,8 +75,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: FlavouriteTableViewCell.identifier) as! FlavouriteTableViewCell
-        let text = self.itemArray[indexPath.row].name ?? ""
-        cell.renewCell(text: text, flavourited: false, availableWidth: self.tableView.frame.width)
+        cell.renewCell(item: self.itemArray[indexPath.row], availableWidth: self.tableView.frame.width)
         return cell
     }
     

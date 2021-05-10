@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class FlavouriteTableViewCell: UITableViewCell {
     
@@ -26,11 +27,14 @@ class FlavouriteTableViewCell: UITableViewCell {
         44
     }
     
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     var label = UILabel()
-    var flavouritedButton = UIButton()
+    var flavouredButton = UIButton()
     let heartImage = UIImage(named: "heart")
-    var isFlavourite:Bool!
-
+    var isFlavoured: Bool!
+    var item: Items!
+    
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -47,13 +51,13 @@ class FlavouriteTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
-
+    
     // MARK: - Setup
     func setup() {
         setupLabel()
@@ -67,28 +71,62 @@ class FlavouriteTableViewCell: UITableViewCell {
     }
     
     func setupButton() {
-        self.flavouritedButton.frame.size = CGSize(width: Self.buttonWidth, height: Self.cellHeight)
-        self.flavouritedButton.addTarget(self, action: #selector(self.flavouritedButtonPressed), for: .touchUpInside)
-        
-//        button.setImage(UIImage.init(named: "uncheck"), for: UIControl.State.normal)//When selected
-//        button.setImage(UIImage.init(named: "check"), for: UIControl.State.highlighted)//When highlighted
-//        button.setImage(UIImage.init(named: "check"), for: UIControl.State.selected)//When selected
-        self.contentView.addSubview(self.flavouritedButton)
+        self.flavouredButton.frame.size = CGSize(width: Self.buttonWidth, height: Self.cellHeight)
+        self.flavouredButton.addTarget(self, action: #selector(self.flavouredButtonPressed), for: .touchUpInside)
+        self.contentView.addSubview(self.flavouredButton)
+    }
+    
+    // MARK: - Common
+    func fetch(id: String) throws -> [NSManagedObject]? {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Flavorite")
+        request.predicate = NSPredicate(format: "id = %@", id)
+        request.returnsObjectsAsFaults = false
+        let result = try context.fetch(request) as? [NSManagedObject]
+        return result
     }
     
     // MARK: - Renew
-    func renewCell(text: String, flavourited: Bool, availableWidth: CGFloat) {
-        self.label.text = text
+    func renewCell(item: Items, availableWidth: CGFloat) {
+        self.item = item
+        self.label.text = self.item.name
         self.label.frame.size.width = availableWidth - Self.buttonWidth - (Self.leftRightLabelSpace * 2)
-        self.flavouritedButton.frame.origin.x = self.label.frame.maxX
-        self.flavouritedButton.setImage(flavourited ? heartImage : heartImage?.withTintColor(.gray), for: .normal)
-        self.isFlavourite = flavourited
+        self.flavouredButton.frame.origin.x = self.label.frame.maxX
+        self.isFlavoured = false
+        self.flavouredButton.setImage(heartImage?.withTintColor(.gray), for: .normal)
+        guard let id = self.item.id else { return }
+        do {
+            if let result = try self.fetch(id: String(id)), result.count == 1 {
+                self.flavouredButton.setImage(heartImage, for: .normal)
+                self.isFlavoured = true
+            }
+        } catch {
+            print("FlavouriteTableViewCell renewCell - ERROR: \(error)")
+        }
     }
     
     // MARK: - Button Event
     @objc
-    func flavouritedButtonPressed() {
-        self.isFlavourite = !self.isFlavourite
-        self.flavouritedButton.setImage(self.isFlavourite ? heartImage : heartImage?.withTintColor(.gray), for: .normal)
+    func flavouredButtonPressed() {
+        print("FlavouriteTableViewCell flavouredButtonPressed")
+        self.isFlavoured = !self.isFlavoured
+        self.flavouredButton.setImage(self.isFlavoured ? heartImage : heartImage?.withTintColor(.gray), for: .normal)
+        guard let idInt = self.item.id else { return }
+        let id = String(idInt)
+        do {
+            guard let result = try fetch(id: id) else { return }
+            if !self.isFlavoured {
+                guard result.count == 1 else { return } // It should return 1 result if it was found. Because `id` is unqiue.
+                context.delete(result[0])
+                try context.save()
+            } else {
+                guard result.count == 0 else { return }
+                let entity = NSEntityDescription.entity(forEntityName: "Flavorite", in: context)
+                let flavorite = NSManagedObject(entity: entity!, insertInto: context)
+                flavorite.setValue(id, forKey: "id") // `id` is unqiue(constraint). Duplicated `id` won't be happened. Once the `id` was saved. it means it is flavoured.
+                try context.save()
+            }
+        } catch {
+            print("FlavouriteTableViewCell flavouredButtonPressed - ERROR: \(error)")
+        }
     }
 }
