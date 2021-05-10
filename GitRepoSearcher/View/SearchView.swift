@@ -62,6 +62,7 @@ class SearchView: UIView, UITextFieldDelegate {
         self.searchTextField.delegate = self
         self.searchTextField.placeholder = "Repo keyword"
         self.searchTextField.keyboardType = .default
+        self.searchTextField.autocapitalizationType = .none
         self.searchTextField.returnKeyType = .search
         self.searchTextField.autocorrectionType = .yes
         self.searchTextField.font = .systemFont(ofSize: 20)

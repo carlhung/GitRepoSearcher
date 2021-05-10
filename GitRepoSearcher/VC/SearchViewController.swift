@@ -103,6 +103,8 @@ class SearchViewController: UIViewController, SearchViewDelegate {
                         let returnedSearchModel = try JSONDecoder().decode(ReturnedSearchModel.self, from: data)
                         self.itemArray = returnedSearchModel.items ?? []
                         self.tableView.reloadData()
+                        let indexPath = IndexPath(row: 0, section: 0)
+                        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
                     } catch {
                         print("SearchViewController searchText, catch error: \(error)")
                     }
