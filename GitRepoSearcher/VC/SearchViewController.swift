@@ -15,10 +15,6 @@ class SearchViewController: UIViewController, SearchViewDelegate {
         60
     }
     
-    class var defaultUITableViewCellIdentifier: String {
-        "Cell"
-    }
-    
     // MARK: - Properties
     private var searchView: SearchView!
     let tableView = UITableView()
@@ -49,7 +45,7 @@ class SearchViewController: UIViewController, SearchViewDelegate {
     func setupTableView() {
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: Self.defaultUITableViewCellIdentifier)
+        self.tableView.register(FlavouriteTableViewCell.self, forCellReuseIdentifier: FlavouriteTableViewCell.identifier)
         self.tableView.frame = CGRect(x: 0, y: self.searchView.frame.origin.y + self.searchView.frame.height, width: self.safeAreaFrame.width, height: self.safeAreaFrame.height - self.searchView.frame.height - (navigationController?.navigationBar.frame.maxY ?? 0))
         self.view.addSubview(self.tableView)
     }
@@ -78,13 +74,9 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UITableViewCell
-        if let returnedCell = tableView.dequeueReusableCell(withIdentifier: Self.defaultUITableViewCellIdentifier) {
-            cell = returnedCell
-        } else {
-            cell = UITableViewCell()
-        }
-        cell.textLabel?.text = self.itemArray[indexPath.row].name
+        let cell = tableView.dequeueReusableCell(withIdentifier: FlavouriteTableViewCell.identifier) as! FlavouriteTableViewCell
+        let text = self.itemArray[indexPath.row].name ?? ""
+        cell.renewCell(text: text, flavourited: false, availableWidth: self.tableView.frame.width)
         return cell
     }
     
@@ -92,5 +84,9 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         let vc = RepoDetailViewController(repo: self.itemArray[indexPath.row])
         self.navigationController?.pushViewController(vc, animated: true)
         tableView.deselectRow(at: indexPath, animated: false)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        FlavouriteTableViewCell.cellHeight
     }
 }
