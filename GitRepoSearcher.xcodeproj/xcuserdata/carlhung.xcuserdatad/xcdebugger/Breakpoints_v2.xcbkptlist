@@ -14,8 +14,8 @@
             filePath = "GitRepoSearcher/VC/SearchViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
             landmarkName = "tableView(_:didSelectRowAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -34,6 +34,54 @@
             endingLineNumber = "45"
             landmarkName = "setupSearchView(widthAndHeight:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "693121D1-9167-4A04-B28E-4F641999AF88"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GitRepoSearcher/VC/SearchViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "searchText(string:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "693121D1-9167-4A04-B28E-4F641999AF88 - b02a818f88f9e4e8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GitRepoSearcher.SearchViewController.searchText(string: Swift.String) -&gt; ()"
+                  moduleName = "GitRepoSearcher"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/carlhung/Desktop/GitRepoSearcher/GitRepoSearcher/VC/SearchViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "60"
+                  endingLineNumber = "60"
+                  offsetFromSymbolStart = "86">
+               </Location>
+               <Location
+                  uuid = "693121D1-9167-4A04-B28E-4F641999AF88 - ffa1ddc68b5dcff6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;GitRepoSearcher.ReturnedSearchModel, Swift.Error&gt;) -&gt; () in GitRepoSearcher.SearchViewController.searchText(string: Swift.String) -&gt; ()"
+                  moduleName = "GitRepoSearcher"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/carlhung/Desktop/GitRepoSearcher/GitRepoSearcher/VC/SearchViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "60"
+                  endingLineNumber = "60"
+                  offsetFromSymbolStart = "219">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
