@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol SearchViewDelegate {
+protocol SearchViewDelegate: AnyObject {
     func searchText(string: String)
 }
 
@@ -16,7 +16,7 @@ class SearchView: UIView, UITextFieldDelegate {
     // MARK: - Properties
     private let enterButton = UIButton()
     private let searchTextField = UITextField()
-    private var delegate: SearchViewDelegate!
+    private weak var delegate: SearchViewDelegate?
     private var totalWidth: CGFloat!
     
     // MARK: - Init
@@ -78,14 +78,14 @@ class SearchView: UIView, UITextFieldDelegate {
     func searchPressed() {
         print("SearchView searchPressed")
         if let text = self.searchTextField.text {
-            delegate.searchText(string: text)
+            delegate?.searchText(string: text)
         }
     }
     
     // MARK: - UITextFieldDelegate Method
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let text = textField.text {
-            delegate.searchText(string: text)
+            delegate?.searchText(string: text)
         }
         textField.resignFirstResponder()
         return true
